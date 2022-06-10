@@ -1,46 +1,33 @@
+import {useEffect, useState} from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import Hero from "../../components/Hero/Hero";
 import Movies from "../../components/Movies/Movies";
-import ENDPOINTS from "../../utils/constants/endpoint";
+import Hero from "../../components/Hero/Hero";
+import ENDPOINTS from "../../utils/constants/endpoints";
 
-function PopularMovie() {
-  // Membuat state movies
-  const [movies, setMovies] = useState([]);
+function PopularMovie(){
+    // membuat state movies
+    const [movies, setMovies] = useState([]);
 
-  /**
-   * Melakukan useEffect.
-   * useEffect to perform other jobs: fetch data
-   */
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    getPopularMovies();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async () => {
+        getPopularMovies();
 
-  async function getPopularMovies() {
-    /**
-     * Menggunakan library axios.
-     * Axios digunakan untuk melakukan fetch data.
-     */
-    const response = await axios(ENDPOINTS.POPULAR);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    /**
-     * Simpan data movies dari axios ke state movies.
-     * Upadte state menggunakan setMovies().
-     */
-    setMovies(response.data.results);
-  }
+    const getPopularMovies = async () => {
+        const res = await axios(ENDPOINTS('popular'));
+        
+        // simpan data ke state movie
+        setMovies(res.data.results);
+    }
 
-  /**
-   * Render Component Movies.
-   * Kirim props movies yang berisi nilai state movies
-   */
-  return (
-    <>
-      <Hero />
-      <Movies title="Popular Movies" movies={movies} />
-    </>
-  );
+    return (
+        <div>
+            <Hero />
+            <Movies movies={movies} title='Popular Movies'/>
+        </div>
+    );
 }
 
 export default PopularMovie;

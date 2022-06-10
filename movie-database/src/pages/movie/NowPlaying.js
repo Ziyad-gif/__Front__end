@@ -2,28 +2,32 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Hero from "../../components/Hero/Hero";
 import Movies from "../../components/Movies/Movies";
+import ENDPOINTS from "../../utils/constants/endpoints";
 
-function NowPlayingMovie() {
-  const API_KEY = process.env.REACT_APP_API_KEY;
-  const URL = `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`;
+function NowPlaying(){
+    // membuat state movies
+    const [movies, setMovies] = useState([]);
 
-  const [movies, setMovies] = useState([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async () => {
+        getPopularMovies();
 
-  useEffect(() => {
-    getNowPlayingMovies();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-  async function getNowPlayingMovies() {
-    const response = await axios(URL);
-    setMovies(response.data.results);
-  }
+    const getPopularMovies = async () => {
+        const res = await axios(ENDPOINTS('now_playing'));
+        
+        // simpan data ke state movie
+        setMovies(res.data.results);
+    }
 
-  return (
-    <>
-      <Hero />
-      <Movies movies={movies} />
-    </>
-  );
+    return (
+        <div>
+            <Hero />
+            <Movies movies={movies} title='Now Playing Movies'/>
+        </div>
+    );
 }
 
-export default NowPlayingMovie;
+export default NowPlaying;

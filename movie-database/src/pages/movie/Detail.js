@@ -3,29 +3,28 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import DetailMovie from "../../components/DetailMovie";
 import Movies from "../../components/Movies/Movies";
+import ENDPOINTS from "../../utils/constants/endpoints";
 
-function Detail() {
-  // Simpan movies (state), id (params), API_KEY ke variable
-  const [movies, setMovies] = useState([]);
-  const { id } = useParams();
-  const API_KEY = process.env.REACT_APP_API_KEY;
+function Detail (){
+    const [movies, setMovies] = useState([]);
+    const { id } = useParams();
+    
+    useEffect(()=>{
+        getRecommendationMovies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id]);
 
-  useEffect(() => {
-    getRecommendationMovies();
-  }, [id]);
+    async function getRecommendationMovies(){
+        const response = await axios(ENDPOINTS('recommendation', id));
 
-  async function getRecommendationMovies() {
-    const URL = `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${API_KEY}`;
-    const response = await axios(URL);
-    setMovies(response.data.results);
-  }
-
-  return (
-    <>
-      <DetailMovie />
-      <Movies title="Recommendation Movies" movies={movies} />
-    </>
-  );
+        setMovies(response.data.results);
+    }
+    return (
+        <div>
+            <DetailMovie />
+            <Movies movies={movies} title="Recommendation Movies"/>
+        </div>
+    )
 }
 
 export default Detail;

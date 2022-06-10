@@ -2,28 +2,32 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Hero from "../../components/Hero/Hero";
 import Movies from "../../components/Movies/Movies";
+import ENDPOINTS from "../../utils/constants/endpoints";
 
-function TopRatedMovie() {
-  const API_KEY = process.env.REACT_APP_API_KEY;
-  const URL = `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}`;
+function ToptRatedMovie(){
+    // membuat state movies
+    const [movies, setMovies] = useState([]);
 
-  const [movies, setMovies] = useState([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async () => {
+        getTopRatedMovies();
 
-  useEffect(() => {
-    getTopRatedMovies();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-  async function getTopRatedMovies() {
-    const response = await axios(URL);
-    setMovies(response.data.results);
-  }
+    const getTopRatedMovies = async () => {
+        const res = await axios(ENDPOINTS('top_rated'));
+        
+        // simpan data ke state movie
+        setMovies(res.data.results);
+    }
 
-  return (
-    <>
-      <Hero />
-      <Movies movies={movies} />
-    </>
-  );
+    return (
+        <div>
+            <Hero />
+            <Movies movies={movies} title='Top Rated Movies' iteration={true}/>
+        </div>
+    );
 }
 
-export default TopRatedMovie;
+export default ToptRatedMovie;
